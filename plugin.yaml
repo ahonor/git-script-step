@@ -1,0 +1,38 @@
+name: git-script-steps
+rundeckPluginVersion: 1.2
+author: (C) Alex Honor
+date: 11/08/2017
+version: 1.0.0
+providers:
+    - name: git-script-step
+      service: RemoteScriptNodeStep
+      title: 'Git / Run Script'
+      description: 'Execute a script contained in a git repository'
+      plugin-type: script
+      script-interpreter: /usr/bin/env bash
+      script-file: exec-script
+      script-args: ${config.git_repo} ${config.script_path}
+      config:
+        - name: git_repo
+          title: Git repo
+          type: String
+          required: true
+        - type: String
+          name: git_token
+          title: Git token
+          description: 'Git token'
+          renderingOptions:
+            selectionAccessor: "STORAGE_PATH"
+            valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+            storage-path-root: "keys"
+        - name: script_path
+          title: Script path
+          type: String
+          required: true
+        - name: script_args
+          title: Script arguments
+          type: String
+          required: false
+        - name: dryrun
+          title: Dryrun?
+          type: Boolean

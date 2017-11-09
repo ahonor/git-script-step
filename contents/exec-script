@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -eu
+
+# Read command line args
+declare -r GIT_REPO=$1 SCRIPT_PATH=$2
+# Read script args
+declare -ra SCRIPT_ARGS=( ${RD_CONFIG_SCRIPT_ARGS:-} )
+
+# Create a temporary workspace 
+declare -r WORKSPACE=$(mktemp -d "/tmp/workspace.XXXX")
+trap 'rm -r "$WORKSPACE"' EXIT ; # Clean up afterwards.
+
+# Do work relative to the workspace.
+cd "$WORKSPACE"
+
+# If dryun, only print out commands that would be run
+if [[ "${RD_CONFIG_DRYRUN:-}" == true ]]
+then
+	cat <<-EOF
+	# ===== dry run =====
+	# git clone "https://oauth2:******token******@${GIT_REPO}.git"
+	# cd "${GIT_REPO}"
+	# exec "$SCRIPT_PATH" ${SCRIPT_ARGS[@]:-}
+	# ===================
+	EOF
+	#
+else
+	#
+	# Check out the repository
+	# 
+	git clone "https://oauth2:${RD_CONFIG_GIT_TOKEN}@${GIT_REPO}.git"
+	# 
+	# Set new working directory relative to repository
+	cd "${GIT_REPO}"
+	# 
+	# Execute the script
+	#
+	exec "$SCRIPT_PATH" "${SCRIPT_ARGS[@]:-}"
+fi
+
+# Done.
+exit $?
+
