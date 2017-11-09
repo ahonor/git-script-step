@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
 
+echo "script: $0"
 echo "$# args: $*"
-echo "Completely sampled."
+
+
+
+echo $(tput setaf 1) " ___   _ _  _ ___  ___ ___ _  __"
+echo $(tput setaf 2) "| _ \ | | | \| |   \| __/ __| |/ /"
+echo $(tput setaf 3) "|   / |_| | .\` | |) | _| (__| ' < "
+echo $(tput setaf 3) '|_|_\\___/|_|\_|___/|___\___|_|\_\'
+echo $(tput setaf 5) "RUNDECK FTW!"$(tput sgr0)
