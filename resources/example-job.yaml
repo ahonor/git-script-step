@@ -17,7 +17,7 @@
     commands:
     - configuration:
         dryrun: 'false'
-        git_repo: https://github.com/your/git-script-step.git
+        git_repo: https://github.com/ahonor/git-script-step.git
         git_token: keys/your/git.oauth.token
         script_args: -numbers "one two" -size ${option.size}
         script_invoker: 'bash '
