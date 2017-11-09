@@ -17,6 +17,7 @@ providers:
           title: Git repo
           type: String
           required: true
+          description: 'URL to git repository'
         - type: String
           name: git_token
           title: Git token
@@ -29,10 +30,19 @@ providers:
           title: Script path
           type: String
           required: true
+          description: 'the script to ivoke. Path is relative to the checked out repo.'
         - name: script_args
           title: Script arguments
           type: String
           required: false
+          description: 'arguments to pass as command line to script'
+        - name: script_invoker
+          title: Script invoker
+          type: String
+          required: false
+          default: 'bash -c'
+          description: 'Invoke the script with this string'
         - name: dryrun
           title: Dryrun?
           type: Boolean
+          description: 'Only print the commands that would have been run.'

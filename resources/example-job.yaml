@@ -1,0 +1,28 @@
+- description: 'run a script in git'
+  executionEnabled: true
+  loglevel: INFO
+  name: run sample-script
+  nodeFilterEditable: false
+  options:
+  - enforced: true
+    name: size
+    value: M
+    values:
+    - S
+    - M
+    - L
+    - XL
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - configuration:
+        dryrun: 'false'
+        git_repo: https://github.com/your/git-script-step.git
+        git_token: keys/your/git.oauth.token
+        script_args: -numbers "one two" -size ${option.size}
+        script_invoker: 'bash '
+        script_path: resources/sample-script
+      nodeStep: true
+      type: git-script-step
+    keepgoing: false
+    strategy: node-first

@@ -3,7 +3,7 @@ set -eu
 
 # Read command line args
 declare -r GIT_REPO=$1 SCRIPT_PATH=$2
-# Read script args
+# Read script args into an array.
 declare -ra SCRIPT_ARGS=( ${RD_CONFIG_SCRIPT_ARGS:-} )
 
 # Create a temporary workspace 
@@ -13,14 +13,19 @@ trap 'rm -r "$WORKSPACE"' EXIT ; # Clean up afterwards.
 # Do work relative to the workspace.
 cd "$WORKSPACE"
 
-# If dryun, only print out commands that would be run
+declare -r REPO_NAME=$(basename "$GIT_REPO" .git)
+# Rewrite the URL to use the oauth2 token
+declare -r GIT_URL=${GIT_REPO/https:\/\/github.com\//https://oauth2:${RD_CONFIG_GIT_TOKEN}@github.com/}
+
+
+# If dryun, only print out commands that would be run.
 if [[ "${RD_CONFIG_DRYRUN:-}" == true ]]
 then
 	cat <<-EOF
 	# ===== dry run =====
-	# git clone "https://oauth2:******token******@${GIT_REPO}.git"
-	# cd "${GIT_REPO}"
-	# exec "$SCRIPT_PATH" ${SCRIPT_ARGS[@]:-}
+	# git clone "$GIT_URL"
+	# cd "${REPO_NAME}"
+	# "$RD_CONFIG_SCRIPT_INVOKER" "$SCRIPT_PATH" ${SCRIPT_ARGS[@]:-}
 	# ===================
 	EOF
 	#
@@ -28,14 +33,14 @@ else
 	#
 	# Check out the repository
 	# 
-	git clone "https://oauth2:${RD_CONFIG_GIT_TOKEN}@${GIT_REPO}.git"
+	git clone "$GIT_URL"
 	# 
 	# Set new working directory relative to repository
-	cd "${GIT_REPO}"
+	cd "${REPO_NAME}"
 	# 
 	# Execute the script
 	#
-	exec "$SCRIPT_PATH" "${SCRIPT_ARGS[@]:-}"
+	"$RD_CONFIG_SCRIPT_INVOKER" "$SCRIPT_PATH" "${SCRIPT_ARGS[@]:-}"
 fi
 
 # Done.
